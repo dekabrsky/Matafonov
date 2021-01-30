@@ -4,4 +4,7 @@
     <string name="tab_text_1">Последниe</string>
     <string name="tab_text_2">Лучшие</string>
     <string name="tab_text_3">Горячие</string>
+    <string name="loading">Загрузка...</string>
+    <string name="go_back">Назад</string>
+    <string name="go_forward">Вперед</string>
 </resources>

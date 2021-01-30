@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -27,6 +28,8 @@ import org.json.JSONObject;
 import java.io.IOException;
 
 import com.bumptech.glide.Glide;
+import com.example.matafonov.models.GifRecord;
+import com.example.matafonov.utils.ApiUtil;
 
 public class PlaceholderFragment extends Fragment {
 
@@ -38,6 +41,9 @@ public class PlaceholderFragment extends Fragment {
     private PageViewModel pageViewModel;
     private OkHttpClient client = new OkHttpClient();
     ImageView mImageView;
+    TextView mDesc;
+    ApiUtil api;
+    Button next, previous;
 
     public static PlaceholderFragment newInstance(int index) {
         PlaceholderFragment fragment = new PlaceholderFragment();
@@ -65,10 +71,45 @@ public class PlaceholderFragment extends Fragment {
         View root = inflater.inflate(R.layout.fragment_main, container, false);
         final TextView textView = root.findViewById(R.id.section_label);
         mImageView = root.findViewById(R.id.imageView);
+        mDesc = root.findViewById(R.id.imageDesc);
+        next = root.findViewById(R.id.button2);
+        previous = root.findViewById(R.id.button);
         /*Glide
                 .with(this)
                 .load("http://static.devli.ru/public/images/gifs/202009/3c2dbbe9-da67-4df3-8790-0fa3d995ceeb.gif")
                 .into(mImageView);*/
+        next.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Меняем текст в TextView (tvOut)
+                try {
+                    GifRecord gif = api.getNextGif();
+                    Glide
+                            .with(PlaceholderFragment.this.getActivity())
+                            .load(gif.getUrl())
+                            .into(mImageView);
+                    mDesc.setText(gif.getDescription());
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        previous.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Меняем текст в TextView (tvOut)
+                try {
+                    GifRecord gif = api.getPreviousGif();
+                    Glide
+                            .with(PlaceholderFragment.this.getActivity())
+                            .load(gif.getUrl())
+                            .into(mImageView);
+                    mDesc.setText(gif.getDescription());
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
         pageViewModel.getText().observe(this, new Observer<String>() {
             @Override
             public void onChanged(@Nullable String s) {
@@ -87,41 +128,27 @@ public class PlaceholderFragment extends Fragment {
         }
 
         public void run(){
-            String gifUrl = null;
+            GifRecord gif = null;
             try {
-                gifUrl = getGifUrl(s);
-            } catch (IOException e) {
+                api = new ApiUtil(s);
+                gif = api.getNextGif();
+            } catch (IOException | JSONException e) {
                 e.printStackTrace();
             }
-            Log.d("GIF Url #2", gifUrl);
-            String finalGifUrl = gifUrl;
+            assert gif != null;
+            String gifUrl = gif.getUrl();
+            String gifDesc = gif.getDescription();
+
             PlaceholderFragment.this.getActivity().runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                Glide
+                    Glide
                         .with(PlaceholderFragment.this.getActivity())
-                        .load(finalGifUrl)
+                        .load(gifUrl)
                         .into(mImageView);
+                    mDesc.setText(gifDesc);
                 }
             });
-        }
-
-        private String getGifUrl(@Nullable String s) throws IOException {
-            String link = LINKS.get(s);
-            StringBuilder gifUrl = new StringBuilder();
-            Request request = new Builder().url(link).build();
-            Call call = client.newCall(request);
-            Response response = call.execute();
-            String json = response.body().string();
-            Log.d("JSON", json);
-            try {
-                gifUrl.append(new JSONObject(json).getJSONArray("result").getJSONObject(0).getString("gifURL"));
-                Log.d("GIFUrl #1", gifUrl.toString());
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-
-            return gifUrl.toString();
         }
     }
 }
