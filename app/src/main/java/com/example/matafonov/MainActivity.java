@@ -2,16 +2,11 @@ package com.example.matafonov;
 
 import android.os.Bundle;
 
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
+import com.example.matafonov.utils.TypefaceUtil;
 import com.google.android.material.tabs.TabLayout;
 
 import androidx.viewpager.widget.ViewPager;
 import androidx.appcompat.app.AppCompatActivity;
-
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
 
 import com.example.matafonov.ui.main.SectionsPagerAdapter;
 
@@ -26,6 +21,7 @@ public class MainActivity extends AppCompatActivity {
         viewPager.setAdapter(sectionsPagerAdapter);
         TabLayout tabs = findViewById(R.id.tabs);
         tabs.setupWithViewPager(viewPager);
+        TypefaceUtil.overrideFont(getApplicationContext(), "sans", "fonts/Nunito-Regular.ttf");
 
         /*fab.setOnClickListener(new View.OnClickListener() {
             @Override

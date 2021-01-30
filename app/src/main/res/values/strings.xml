@@ -1,5 +1,7 @@
 <resources>
-    <string name="app_name">Matafonov</string>
-    <string name="tab_text_1">Tab 1</string>
-    <string name="tab_text_2">Tab 2</string>
+    <string name="my_name">Matafonov</string>
+    <string name="app_name">Залипалка на GIF</string>
+    <string name="tab_text_1">Последниe</string>
+    <string name="tab_text_2">Лучшие</string>
+    <string name="tab_text_3">Горячие</string>
 </resources>
