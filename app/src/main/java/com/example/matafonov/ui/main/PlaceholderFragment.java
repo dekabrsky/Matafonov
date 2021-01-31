@@ -78,7 +78,9 @@ public class PlaceholderFragment extends Fragment {
                 .into(mImageLoad);
         if (ConnectionUtil.hasConnection(Objects.requireNonNull(getContext()))) {
             next = root.findViewById(R.id.button2);
+            next.setVisibility(View.GONE);
             previous = root.findViewById(R.id.button);
+            previous.setVisibility(View.GONE);
             int s = pageViewModel.getIndex();
             next.setOnClickListener(new View.OnClickListener() {
                 @Override
