@@ -51,6 +51,7 @@
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
                         android:layout_gravity="center"
+                        android:layout_centerHorizontal="true"
                         />
 
                     <ImageView
@@ -62,6 +63,7 @@
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
                         android:layout_gravity="center"
+                        android:layout_centerHorizontal="true"
                         />
                 </RelativeLayout>
 
