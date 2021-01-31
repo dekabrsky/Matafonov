@@ -1,5 +1,6 @@
 package com.example.matafonov.utils;
 
+import android.net.Uri;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -16,6 +17,7 @@ import java.util.Map;
 import okhttp3.Call;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
+import okhttp3.Request.Builder;
 import okhttp3.Response;
 
 public class ApiUtil {
@@ -82,10 +84,26 @@ public class ApiUtil {
             String json = response.body().string();
             Log.d("JSON - Random", json);
             String gifDesc = new JSONObject(json).getString("description");
-            String gifUrl = new JSONObject(json).getString("gifURL");
+            String gifUrl;
+            try {
+                gifUrl = new JSONObject(json).getString("gifURL");
+            } catch (JSONException e){
+                gifUrl = "https://i.gifer.com/3z9a.gif";
+                gifDesc = "А тут гифки нет: " + gifDesc;
+            }
             GifRecord gr = new GifRecord(gifDesc, gifUrl);
             random_records.add(gr);
             return gr;
+        }
+    }
+
+    public GifRecord getCurrentGif() throws JSONException {
+        if (s.equals("1"))
+            return random_records.get(number);
+        else {
+            String gifDesc = records.getJSONObject(number).getString("description");
+            String gifUrl = records.getJSONObject(number).getString("gifURL");
+            return new GifRecord(gifDesc, gifUrl);
         }
     }
 
