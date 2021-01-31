@@ -55,18 +55,17 @@ public class ApiUtil {
         String gifDesc = records.getJSONObject(number).getString("description");
         String gifUrl = records.getJSONObject(number).getString("gifURL");
         number++;
-        GifRecord gr = new GifRecord(gifDesc, gifUrl);
-        return gr;
+        return new GifRecord(gifDesc, gifUrl);
     }
 
     public GifRecord getPreviousGif() throws JSONException {
-        if (number != 0)
+        if (number != 1)
             number--;
         if (s.equals("1")){
-            return random_records.get(number);
+            return random_records.get(number - 1);
         } else {
-            String gifDesc = records.getJSONObject(number).getString("description");
-            String gifUrl = records.getJSONObject(number).getString("gifURL");
+            String gifDesc = records.getJSONObject(number - 1).getString("description");
+            String gifUrl = records.getJSONObject(number - 1).getString("gifURL");
             GifRecord gr = new GifRecord(gifDesc, gifUrl);
             return gr;
         }
@@ -75,7 +74,7 @@ public class ApiUtil {
     public GifRecord getNextRandomGif() throws IOException, JSONException {
         number++;
         if (number < random_records.size()){
-            return random_records.get(number);
+            return random_records.get(number - 1);
         } else {
             String link = links.get(s);
             Request request = new Request.Builder().url(link).build();
@@ -98,22 +97,31 @@ public class ApiUtil {
     }
 
     public GifRecord getCurrentGif() throws JSONException {
-        if (s.equals("1"))
-            return random_records.get(number);
-        else {
-            String gifDesc = records.getJSONObject(number).getString("description");
-            String gifUrl = records.getJSONObject(number).getString("gifURL");
-            return new GifRecord(gifDesc, gifUrl);
+        try {
+            if (s.equals("1"))
+                return random_records.get(number);
+            else {
+                String gifDesc = records.getJSONObject(number).getString("description");
+                String gifUrl = records.getJSONObject(number).getString("gifURL");
+                Log.d("Current GIF", gifDesc + gifUrl);
+                return new GifRecord(gifDesc, gifUrl);
+            }
+        } catch (Exception e){
+            return new GifRecord("Такой записи нет", "https://i.gifer.com/3z9a.gif");
         }
     }
 
     public boolean hasNext(){
         if (!s.equals("1"))
-            return records != null && number + 1 < records.length();
+            return records != null && number < records.length();
         else return true;
     }
 
     public boolean hasPrevious(){
-        return number > 0;
+        return number > 1;
+    }
+
+    public int getNumber(){
+        return number;
     }
 }

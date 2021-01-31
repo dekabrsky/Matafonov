@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -71,6 +72,7 @@ public class PlaceholderFragment extends Fragment {
         mImageView = root.findViewById(R.id.imageView);
         mImageLoad = root.findViewById(R.id.imageLoad);
         mDesc = root.findViewById(R.id.imageDesc);
+        new Thread(new InitTask(String.valueOf(pageViewModel.getIndex()))).start();
         Glide.with(this)
                 .load(Uri.parse("file:///android_asset/load.gif"))
                 .into(mImageLoad);
@@ -105,7 +107,7 @@ public class PlaceholderFragment extends Fragment {
             pageViewModel.getText().observe(this, new Observer<String>() {
                 @Override
                 public void onChanged(@Nullable String s) {
-                    new Thread(new InitTask(s)).start();
+                    //new Thread(new InitTask(s)).start();
                     textView.setText(s);
                 }
             });
@@ -161,7 +163,7 @@ public class PlaceholderFragment extends Fragment {
                     api = new ApiUtil(s);
                     gif = !s.equals("1") ? api.getNextGif() : api.getNextRandomGif();
                 } else
-                    gif = api.getCurrentGif();
+                   gif = api.getCurrentGif();
             } catch (IOException | JSONException e) {
                 NetErrorSnack();
                 e.printStackTrace();
